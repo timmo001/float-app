@@ -1,0 +1,28 @@
+---
+name: float-app
+arch: ${ARCH}
+platform: linux
+version: ${VERSION}
+version_schema: none
+release: "1"
+section: utils
+priority: optional
+maintainer: Aidan Timson <aidan@timmo.dev>
+description: Persistently float selected Hyprland windows
+homepage: https://github.com/timmo001/float-app
+license: Apache-2.0
+depends:
+  - slurp
+contents:
+  - src: dist/release/root/float-app
+    dst: /usr/bin/float-app
+    file_info:
+      mode: 0755
+  - src: .scripts/linux/completions/float-app.bash
+    dst: /usr/share/bash-completion/completions/float-app
+  - src: .scripts/linux/completions/float-app.fish
+    dst: /usr/share/fish/vendor_completions.d/float-app.fish
+  - src: .scripts/linux/completions/_float-app
+    dst: /usr/share/zsh/site-functions/_float-app
+  - src: LICENSE
+    dst: /usr/share/licenses/float-app/LICENSE
