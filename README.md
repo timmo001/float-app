@@ -12,8 +12,9 @@ rules.
 ## Installation
 
 Stable releases use `YYYYMMDD.N`, where `N` increments for releases made on the
-same UTC day. Publishing a draft release builds and attaches Linux archives,
-deb and RPM packages, and `SHA256SUMS`.
+same UTC day. Create a blank draft, optionally use GitHub's generated release
+notes, then publish it to build and attach Linux archives, deb and RPM packages,
+and `SHA256SUMS`.
 
 Install a release archive, replacing `<version>` and `<architecture>` with the
 published version and either `x86_64` or `aarch64`:
