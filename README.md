@@ -4,51 +4,6 @@ Persistently float selected Hyprland windows. Rules are written to the selected
 Hyprland configuration while preserving stowed symlinks and existing Omarchy
 rules.
 
-## Requirements
+Full setup, CLI reference, and configuration docs are published at <https://float-app.timmo.dev>.
 
-- Hyprland
-- `slurp` for interactive window picking
-
-## Installation
-
-Stable releases use `YYYYMMDD.N`, where `N` increments for releases made on the
-same UTC day. Create a blank draft, optionally use GitHub's generated release
-notes, then publish it to build and attach Linux archives, deb and RPM packages,
-and `SHA256SUMS`.
-
-Install a release archive, replacing `<version>` and `<architecture>` with the
-published version and either `x86_64` or `aarch64`:
-
-```sh
-curl -LO "https://github.com/timmo001/float-app/releases/download/<version>/float-app-<version>-linux-<architecture>.tar.gz"
-tar -xzf "float-app-<version>-linux-<architecture>.tar.gz"
-install -Dm755 float-app ~/.local/bin/float-app
-```
-
-Install the matching deb or RPM package:
-
-```sh
-sudo apt install ./float-app_<version>_<architecture>.deb
-sudo dnf install ./float-app-<version>-1.<architecture>.rpm
-```
-
-On Arch Linux, install the prebuilt package from the AUR:
-
-```sh
-yay -S float-app-bin
-```
-
-Use `float-app-git` to build the current `main` branch instead. The git package
-updates after relevant pushes to `main`; the binary package updates only when a
-stable GitHub Release is published.
-
-## Usage
-
-```sh
-float-app pick
-float-app add
-float-app list
-float-app remove org.example.App
-```
-
-Run `float-app help` for all commands and options.
+On Arch, install `float-app-bin` from the AUR. For local development, run `mise run install` and `mise run build`, then use `dist/float-app`.

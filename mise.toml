@@ -43,6 +43,20 @@ description = "Generate shell completions"
 depends = ["install"]
 run = "bun run completions"
 
+[tasks."docs:install"]
+description = "Install documentation dependencies"
+run = "bun install --cwd docs"
+
+[tasks."docs:gen:cli"]
+description = "Generate the CLI reference"
+depends = ["docs:install"]
+run = "bun run --cwd docs gen:cli"
+
+[tasks."docs:build"]
+description = "Build the documentation site"
+depends = ["docs:install"]
+run = "bun run --cwd docs build"
+
 [tasks."completions:check"]
 description = "Check generated shell completions"
 depends = ["install"]
