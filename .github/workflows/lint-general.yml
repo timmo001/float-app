@@ -15,8 +15,23 @@ permissions:
 jobs:
   lint:
     uses: >-
-      timmo001/workflows/.github/workflows/lint-general.yml@8fd9a5b968018e949e17e930e9741e797f7d27ac
+      timmo001/workflows/.github/workflows/lint-general.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
     with:
       lint-markdown: true
       lint-yaml: true
       lint-actions: true
+
+  jsonlint:
+    uses: >-
+      timmo001/workflows/.github/workflows/lint-jsonlint.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
+
+  markdown-links:
+    uses: >-
+      timmo001/workflows/.github/workflows/lint-markdown-links.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
+
+  shellcheck:
+    uses: >-
+      timmo001/workflows/.github/workflows/lint-shellcheck.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
+    with:
+      scandir: ./.scripts
+      severity: warning

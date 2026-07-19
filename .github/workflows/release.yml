@@ -24,7 +24,7 @@ jobs:
     permissions:
       contents: write
     uses: >-
-      timmo001/workflows/.github/workflows/release-bun-cli-linux.yml@8fd9a5b968018e949e17e930e9741e797f7d27ac
+      timmo001/workflows/.github/workflows/release-bun-cli-linux.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
     with:
       binary-name: float-app
       entrypoint: src/index.ts
@@ -74,7 +74,7 @@ jobs:
     name: Publish AUR (float-app-bin)
     needs: prepare-aur
     uses: >-
-      timmo001/workflows/.github/workflows/publish-aur.yml@8fd9a5b968018e949e17e930e9741e797f7d27ac
+      timmo001/workflows/.github/workflows/publish-aur.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
     with:
       package-name: float-app-bin
       artifact-name: >-
@@ -91,7 +91,7 @@ jobs:
     name: Publish AUR (float-app-git)
     needs: prepare-aur
     uses: >-
-      timmo001/workflows/.github/workflows/publish-aur.yml@8fd9a5b968018e949e17e930e9741e797f7d27ac
+      timmo001/workflows/.github/workflows/publish-aur.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
     with:
       package-name: float-app-git
       artifact-name: >-
