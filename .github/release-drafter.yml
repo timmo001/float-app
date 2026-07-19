@@ -7,32 +7,39 @@ sort-direction: ascending
 
 categories:
   - title: Breaking changes
-    labels:
-      - breaking-change
+    when:
+      labels:
+        - breaking-change
   - title: New features
-    labels:
-      - new-feature
-      - feature
+    when:
+      labels:
+        - new-feature
+        - feature
   - title: Bug fixes
-    labels:
-      - bug
-      - bugfix
+    when:
+      labels:
+        - bug
+        - bugfix
   - title: Enhancements
-    labels:
-      - enhancement
-      - refactor
-      - performance
+    when:
+      labels:
+        - enhancement
+        - refactor
+        - performance
   - title: Maintenance
-    labels:
-      - maintenance
-      - chore
-      - ci
+    when:
+      labels:
+        - maintenance
+        - chore
+        - ci
   - title: Documentation
-    labels:
-      - documentation
+    when:
+      labels:
+        - documentation
   - title: Dependency updates
-    labels:
-      - dependencies
+    when:
+      labels:
+        - dependencies
   - type: version-resolver
     semver-increment: minor
 
