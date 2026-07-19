@@ -12,8 +12,8 @@ provides=('float-app')
 conflicts=('float-app' 'float-app-git')
 options=('!strip')
 source=('float-app.bash' 'float-app.fish' '_float-app' 'LICENSE')
-source_x86_64=("float-app-${pkgver}-x86_64.tar.gz::${url}/releases/download/${pkgver}/float-app-${pkgver}-linux-x86_64.tar.gz")
-source_aarch64=("float-app-${pkgver}-aarch64.tar.gz::${url}/releases/download/${pkgver}/float-app-${pkgver}-linux-aarch64.tar.gz")
+source_x86_64=("float-app-${pkgver}-${CARCH}.tar.gz::${url}/releases/download/${pkgver}/float-app-${pkgver}-linux-x86_64.tar.gz")
+source_aarch64=("float-app-${pkgver}-${CARCH}.tar.gz::${url}/releases/download/${pkgver}/float-app-${pkgver}-linux-aarch64.tar.gz")
 sha256sums=(
   'SKIP'
   'SKIP'
