@@ -38,6 +38,16 @@ description = "Check formatting"
 depends = ["install"]
 run = "bun run format:check"
 
+[tasks.completions]
+description = "Generate shell completions"
+depends = ["install"]
+run = "bun run completions"
+
+[tasks."completions:check"]
+description = "Check generated shell completions"
+depends = ["install"]
+run = "bun run completions:check"
+
 [tasks.check]
 description = "Type-check, test, and verify formatting"
-depends = ["typecheck", "test", "format:check"]
+depends = ["typecheck", "test", "format:check", "completions:check"]

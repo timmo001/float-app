@@ -10,8 +10,10 @@
     "dev": "bun run --watch src/index.ts",
     "build": "bun build src/index.ts --compile --outfile dist/float-app",
     "test": "bun test",
-    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "completions": "bun run .scripts/generate-completions.ts",
+    "completions:check": "bun run .scripts/generate-completions.ts --check",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \".scripts/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\" \".scripts/**/*.ts\"",
     "prepare": "effect-language-service patch"
   },
   "dependencies": {
