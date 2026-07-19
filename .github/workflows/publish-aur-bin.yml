@@ -1,0 +1,63 @@
+---
+name: Publish AUR binary package
+
+# yamllint disable-line rule:truthy
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      release-version:
+        description: Stable GitHub Release tag to publish
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Prepare AUR package (float-app-bin)
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      !github.event.release.prerelease
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: >-
+        ${{ inputs.release-version || github.event.release.tag_name }}
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ env.RELEASE_VERSION }}
+          persist-credentials: false
+      - name: Prepare float-app-bin
+        run: >-
+          .scripts/linux/prepare-aur-bin.sh "$RELEASE_VERSION"
+          "${{ runner.temp }}/float-app-bin"
+      - name: Upload float-app-bin
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: >-
+            aur-float-app-bin-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/float-app-bin
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    name: Publish AUR (float-app-bin)
+    needs: prepare
+    uses: >-
+      timmo001/workflows/.github/workflows/publish-aur.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
+    with:
+      package-name: float-app-bin
+      artifact-name: >-
+        aur-float-app-bin-${{ github.run_id }}-${{ github.run_attempt }}
+      auxiliary-file-paths: |-
+        float-app.bash
+        float-app.fish
+        _float-app
+        LICENSE
+    secrets:
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}

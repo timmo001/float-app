@@ -38,6 +38,8 @@ yay -S float-app-bin
 ```
 
 Use `float-app-git` to build the current `main` branch instead.
+The git package updates after rolling releases; the binary package updates only
+when a stable GitHub Release is published.
 
 ## Usage
 

@@ -33,8 +33,8 @@ jobs:
       smoke-test-arguments: --version
       prerelease: true
 
-  prepare-aur:
-    name: Prepare AUR packages
+  prepare-aur-git:
+    name: Prepare AUR package (float-app-git)
     needs: release
     runs-on: ubuntu-latest
     steps:
@@ -43,24 +43,10 @@ jobs:
         with:
           ref: ${{ needs.release.outputs.source-sha }}
           persist-credentials: false
-      - name: Prepare float-app-bin
-        env:
-          RELEASE_VERSION: ${{ needs.release.outputs.release-version }}
-        run: >-
-          .scripts/linux/prepare-aur-bin.sh "$RELEASE_VERSION"
-          "${{ runner.temp }}/float-app-bin"
       - name: Prepare float-app-git
         run: >-
           .scripts/linux/prepare-aur-git.sh
           "${{ runner.temp }}/float-app-git"
-      - name: Upload float-app-bin
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: >-
-            aur-float-app-bin-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/float-app-bin
-          if-no-files-found: error
-          retention-days: 1
       - name: Upload float-app-git
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -70,26 +56,9 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  publish-aur-bin:
-    name: Publish AUR (float-app-bin)
-    needs: prepare-aur
-    uses: >-
-      timmo001/workflows/.github/workflows/publish-aur.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
-    with:
-      package-name: float-app-bin
-      artifact-name: >-
-        aur-float-app-bin-${{ github.run_id }}-${{ github.run_attempt }}
-      auxiliary-file-paths: |-
-        float-app.bash
-        float-app.fish
-        _float-app
-        LICENSE
-    secrets:
-      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-
   publish-aur-git:
     name: Publish AUR (float-app-git)
-    needs: prepare-aur
+    needs: prepare-aur-git
     uses: >-
       timmo001/workflows/.github/workflows/publish-aur.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
     with:
