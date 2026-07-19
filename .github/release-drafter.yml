@@ -1,0 +1,42 @@
+---
+name-template: "$RESOLVED_VERSION"
+tag-template: "$RESOLVED_VERSION"
+version-template: "$MAJOR.$MINOR"
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
+sort-direction: ascending
+
+categories:
+  - title: Breaking changes
+    labels:
+      - breaking-change
+  - title: New features
+    labels:
+      - new-feature
+      - feature
+  - title: Bug fixes
+    labels:
+      - bug
+      - bugfix
+  - title: Enhancements
+    labels:
+      - enhancement
+      - refactor
+      - performance
+  - title: Maintenance
+    labels:
+      - maintenance
+      - chore
+      - ci
+  - title: Documentation
+    labels:
+      - documentation
+  - title: Dependency updates
+    labels:
+      - dependencies
+  - type: version-resolver
+    semver-increment: minor
+
+template: |
+  ## What's changed
+
+  $CHANGES
