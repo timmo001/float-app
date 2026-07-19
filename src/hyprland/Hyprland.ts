@@ -1,6 +1,13 @@
 import { homedir } from "node:os";
 import { dirname, extname, join, relative, resolve } from "node:path";
-import { lstat, mkdir, realpath, rename, writeFile } from "node:fs/promises";
+import {
+  lstat,
+  mkdir,
+  readdir,
+  realpath,
+  rename,
+  writeFile,
+} from "node:fs/promises";
 import { Context, Effect, Layer, Schema } from "effect";
 import { CommandError, CommandExecutor } from "../services/CommandExecutor.js";
 import {
@@ -114,13 +121,15 @@ function loadRegistry() {
 function destinationCandidates() {
   return Effect.tryPromise({
     try: async () => {
-      const glob = new Bun.Glob("*.{lua,conf}");
-      const paths: string[] = [];
-      for await (const path of glob.scan({ cwd: configRoot })) {
-        if (path !== "float-app.lua" && path !== "float-app.conf") {
-          paths.push(join(configRoot, path));
-        }
-      }
+      const paths = (await readdir(configRoot, { withFileTypes: true }))
+        .filter(
+          (entry) =>
+            (entry.isFile() || entry.isSymbolicLink()) &&
+            [".lua", ".conf"].includes(extname(entry.name)) &&
+            entry.name !== "float-app.lua" &&
+            entry.name !== "float-app.conf",
+        )
+        .map((entry) => join(configRoot, entry.name));
       const preferred = [
         "looknfeel.lua",
         "looknfeel.conf",
@@ -182,11 +191,21 @@ function validateDestination(path: string) {
 function hasOmarchyFloatingRules() {
   return Effect.tryPromise({
     try: async () => {
-      const glob = new Bun.Glob("**/*.{lua,conf}");
-      for await (const entry of glob.scan({ cwd: configRoot })) {
-        if (entry.endsWith("float-app.lua") || entry.endsWith("float-app.conf"))
+      const entries = await readdir(configRoot, {
+        recursive: true,
+        withFileTypes: true,
+      });
+      for (const entry of entries) {
+        if (
+          !(entry.isFile() || entry.isSymbolicLink()) ||
+          ![".lua", ".conf"].includes(extname(entry.name)) ||
+          entry.name === "float-app.lua" ||
+          entry.name === "float-app.conf"
+        )
           continue;
-        const content = await Bun.file(join(configRoot, entry)).text();
+        const content = await Bun.file(
+          join(entry.parentPath, entry.name),
+        ).text();
         if (/float on[^\n]*match:tag floating-window/.test(content))
           return true;
         if (
