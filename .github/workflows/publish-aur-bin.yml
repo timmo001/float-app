@@ -6,6 +6,7 @@ on:
   release:
     types:
       - published
+      - released
   workflow_dispatch:
     inputs:
       release-version:
@@ -15,6 +16,13 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: >-
+    publish-aur-bin-${{
+      inputs.release-version || github.event.release.tag_name
+    }}
+  cancel-in-progress: false
 
 jobs:
   prepare:
