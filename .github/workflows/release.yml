@@ -1,5 +1,5 @@
 ---
-name: Release
+name: Publish AUR git package
 
 # yamllint disable-line rule:truthy
 on:
@@ -20,28 +20,13 @@ permissions:
   contents: read
 
 jobs:
-  release:
-    permissions:
-      contents: write
-    uses: >-
-      timmo001/workflows/.github/workflows/release-bun-cli-linux.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
-    with:
-      binary-name: float-app
-      entrypoint: src/index.ts
-      package-config: .scripts/linux/nfpm.yaml
-      bun-version: 1.3.14
-      smoke-test-arguments: --version
-      prerelease: true
-
-  prepare-aur-git:
+  prepare:
     name: Prepare AUR package (float-app-git)
-    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
-          ref: ${{ needs.release.outputs.source-sha }}
           persist-credentials: false
       - name: Prepare float-app-git
         run: >-
@@ -56,11 +41,11 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  publish-aur-git:
+  publish:
     name: Publish AUR (float-app-git)
-    needs: prepare-aur-git
+    needs: prepare
     uses: >-
-      timmo001/workflows/.github/workflows/publish-aur.yml@e8abb2a494c5869c6aa88642636f735e265cdae7
+      timmo001/workflows/.github/workflows/publish-aur.yml@7c0c9b99547a5d90bb16f35ac848695c4b6473ab
     with:
       package-name: float-app-git
       artifact-name: >-
