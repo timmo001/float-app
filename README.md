@@ -1,6 +1,8 @@
 # float-app
 
-Persistently float selected Hyprland windows. Rules are written to the selected Hyprland configuration while preserving stowed symlinks and existing Omarchy rules.
+Persistently float selected Hyprland windows. Rules are written to the selected
+Hyprland configuration while preserving stowed symlinks and existing Omarchy
+rules.
 
 ## Requirements
 
@@ -9,9 +11,12 @@ Persistently float selected Hyprland windows. Rules are written to the selected 
 
 ## Installation
 
-Rolling prereleases use `YYYYMMDD.N`, where `N` increments for releases made on the same UTC day. Each release records its source commit and publishes `SHA256SUMS`.
+Rolling prereleases use `YYYYMMDD.N`, where `N` increments for releases made on
+the same UTC day. Each release records its source commit and publishes
+`SHA256SUMS`.
 
-Install a release archive, replacing `<version>` and `<architecture>` with the published version and either `x86_64` or `aarch64`:
+Install a release archive, replacing `<version>` and `<architecture>` with the
+published version and either `x86_64` or `aarch64`:
 
 ```sh
 curl -LO "https://github.com/timmo001/float-app/releases/download/<version>/float-app-<version>-linux-<architecture>.tar.gz"
