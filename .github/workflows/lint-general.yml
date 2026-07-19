@@ -1,0 +1,22 @@
+---
+name: Lint general
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    uses: >-
+      timmo001/workflows/.github/workflows/lint-general.yml@8fd9a5b968018e949e17e930e9741e797f7d27ac
+    with:
+      lint-markdown: true
+      lint-yaml: true
+      lint-actions: true

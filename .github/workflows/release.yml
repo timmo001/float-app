@@ -1,0 +1,100 @@
+---
+name: Release
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+      - package.json
+      - bun.lock
+      - mise.toml
+      - LICENSE
+      - .scripts/**
+      - .github/workflows/release.yml
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    uses: >-
+      timmo001/workflows/.github/workflows/release-bun-cli-linux.yml@8fd9a5b968018e949e17e930e9741e797f7d27ac
+    with:
+      binary-name: float-app
+      entrypoint: src/index.ts
+      package-config: .scripts/linux/nfpm.yaml
+      bun-version: 1.3.14
+      smoke-test-arguments: --version
+      prerelease: true
+
+  prepare-aur:
+    name: Prepare AUR packages
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ needs.release.outputs.source-sha }}
+          persist-credentials: false
+      - name: Prepare float-app-bin
+        env:
+          RELEASE_VERSION: ${{ needs.release.outputs.release-version }}
+        run: >-
+          .scripts/linux/prepare-aur-bin.sh "$RELEASE_VERSION"
+          "${{ runner.temp }}/float-app-bin"
+      - name: Prepare float-app-git
+        run: >-
+          .scripts/linux/prepare-aur-git.sh
+          "${{ runner.temp }}/float-app-git"
+      - name: Upload float-app-bin
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: >-
+            aur-float-app-bin-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/float-app-bin
+          if-no-files-found: error
+          retention-days: 1
+      - name: Upload float-app-git
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: >-
+            aur-float-app-git-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/float-app-git
+          if-no-files-found: error
+          retention-days: 1
+
+  publish-aur-bin:
+    name: Publish AUR (float-app-bin)
+    needs: prepare-aur
+    uses: >-
+      timmo001/workflows/.github/workflows/publish-aur.yml@8fd9a5b968018e949e17e930e9741e797f7d27ac
+    with:
+      package-name: float-app-bin
+      artifact-name: >-
+        aur-float-app-bin-${{ github.run_id }}-${{ github.run_attempt }}
+      auxiliary-file-paths: |-
+        float-app.bash
+        float-app.fish
+        _float-app
+        LICENSE
+    secrets:
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+
+  publish-aur-git:
+    name: Publish AUR (float-app-git)
+    needs: prepare-aur
+    uses: >-
+      timmo001/workflows/.github/workflows/publish-aur.yml@8fd9a5b968018e949e17e930e9741e797f7d27ac
+    with:
+      package-name: float-app-git
+      artifact-name: >-
+        aur-float-app-git-${{ github.run_id }}-${{ github.run_attempt }}
+    secrets:
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
