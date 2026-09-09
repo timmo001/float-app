@@ -14,6 +14,7 @@ float-app list
 float-app remove org.example.App
 ```
 
-Use `float-app help` or `float-app <command> --help` for terminal help. The [command reference](/cli/commands/) is generated from the same CLI registry.
+Use `float-app help` or `float-app <command> --help` for terminal help. The
+[command reference](/cli/commands/) is generated from the same CLI registry.
 
 Generate Bash, Fish, or Zsh completions with `float-app completions <shell>`.

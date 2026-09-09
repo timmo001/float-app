@@ -13,7 +13,8 @@ Run `add` without a class to select a visible window with `slurp`:
 float-app add
 ```
 
-On the first change, choose the `.lua` or `.conf` file under `~/.config/hypr` that should include the generated rules. To avoid the prompt, pass it explicitly:
+On the first change, choose the `.lua` or `.conf` file under `~/.config/hypr` that
+should include the generated rules. To avoid the prompt, pass it explicitly:
 
 ```bash
 float-app add org.gnome.Calculator --config ~/.config/hypr/hyprland.conf
@@ -35,7 +36,8 @@ float-app list
 float-app list --json
 ```
 
-`pick` selects a visible window without changing focus. `detect` inspects the focused window.
+`pick` selects a visible window without changing focus. `detect` inspects the
+focused window.
 
 ## Remove a Rule
 

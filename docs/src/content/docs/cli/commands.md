@@ -19,13 +19,13 @@ float-app pick [options]
 
 Uses slurp to select any visible window without changing focus.
 
-**Options**
+### Options
 
 | Option   | Description |
 | -------- | ----------- |
 | `--json` | Emit JSON   |
 
-**Examples**
+### Examples
 
 ```bash
 float-app pick
@@ -40,13 +40,13 @@ Print the focused window's Hyprland metadata
 float-app detect [options]
 ```
 
-**Options**
+### Options
 
 | Option   | Description |
 | -------- | ----------- |
 | `--json` | Emit JSON   |
 
-**Examples**
+### Examples
 
 ```bash
 float-app detect
@@ -60,7 +60,7 @@ Make an application float by default
 float-app add [class] [options]
 ```
 
-**Options**
+### Options
 
 | Option              | Description                                              |
 | ------------------- | -------------------------------------------------------- |
@@ -68,13 +68,13 @@ float-app add [class] [options]
 | `--initial-class`   | Match initialClass instead of class                      |
 | `--config` `<path>` | Hyprland config file that should include float-app rules |
 
-**Arguments**
+### Arguments
 
 | Argument  | Description             |
 | --------- | ----------------------- |
 | `<class>` | Exact application class |
 
-**Examples**
+### Examples
 
 ```bash
 float-app add
@@ -90,20 +90,20 @@ Remove an application's floating rule
 float-app remove <class> [options]
 ```
 
-**Options**
+### Options
 
 | Option              | Description                                              |
 | ------------------- | -------------------------------------------------------- |
 | `--initial-class`   | Remove an initialClass rule instead of a class rule      |
 | `--config` `<path>` | Hyprland config file that should include float-app rules |
 
-**Arguments**
+### Arguments
 
 | Argument  | Description             |
 | --------- | ----------------------- |
 | `<class>` | Exact application class |
 
-**Examples**
+### Examples
 
 ```bash
 float-app remove org.gnome.Calculator
@@ -117,13 +117,13 @@ List configured floating applications
 float-app list [options]
 ```
 
-**Options**
+### Options
 
 | Option   | Description |
 | -------- | ----------- |
 | `--json` | Emit JSON   |
 
-**Examples**
+### Examples
 
 ```bash
 float-app list
@@ -137,7 +137,7 @@ Generate shell completions
 float-app completions [bash|fish|zsh]
 ```
 
-**Arguments**
+### Arguments
 
 | Argument  | Description                    |
 | --------- | ------------------------------ |
@@ -151,7 +151,7 @@ Show float-app help
 float-app help [command]
 ```
 
-**Arguments**
+### Arguments
 
 | Argument    | Description |
 | ----------- | ----------- |
