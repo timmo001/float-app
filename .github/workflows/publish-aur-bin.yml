@@ -75,7 +75,7 @@ jobs:
     name: Publish Arch package (float-app-bin)
     needs: prepare
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/build-arch-package.yml@ff1183decb99b9bd7cea4fe7f1ce6c8f5f10f43b  # master
+    uses: timmo001/workflows/.github/workflows/build-arch-package.yml@8eac938d57bbcff242ec16ffbb3bbcea0d45b065  # master
     with:
       package-name: float-app-bin
       # yamllint disable-line rule:line-length
