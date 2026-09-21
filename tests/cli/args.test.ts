@@ -15,6 +15,7 @@ describe("CLI arguments", () => {
       "--config",
       "/tmp/hypr.conf",
     ]);
+
     expect(args.positionals).toEqual(["Example"]);
     expect(hasOption(args, "--initial-class")).toBe(true);
     expect(optionValue(args, "--config")).toBe("/tmp/hypr.conf");
@@ -22,5 +23,18 @@ describe("CLI arguments", () => {
 
   test("rejects unknown options", () => {
     expect(() => parseCliArgs(["add", "--wat"])).toThrow(UsageError);
+  });
+
+  test("does not return option values for flags or missing options", () => {
+    const args = parseCliArgs(["add", "--initial-class"]);
+
+    expect(optionValue(args, "--initial-class")).toBeUndefined();
+    expect(optionValue(args, "--config")).toBeUndefined();
+    expect(
+      optionValue(
+        { ...args, options: new Map([["--initial-class", false]]) },
+        "--initial-class",
+      ),
+    ).toBeUndefined();
   });
 });

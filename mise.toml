@@ -28,6 +28,11 @@ description = "Run float-app tests"
 depends = ["install"]
 run = "bun test"
 
+[tasks.lint]
+description = "Lint source, tests, and scripts"
+depends = ["install"]
+run = "bun run lint"
+
 [tasks.format]
 description = "Format source and tests"
 depends = ["install"]
@@ -63,5 +68,5 @@ depends = ["install"]
 run = "bun run completions:check"
 
 [tasks.check]
-description = "Type-check, test, and verify formatting"
-depends = ["typecheck", "test", "format:check", "completions:check"]
+description = "Lint, type-check, test, and verify formatting"
+depends = ["lint", "typecheck", "test", "format:check", "completions:check"]

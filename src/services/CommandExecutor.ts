@@ -13,6 +13,7 @@ export const CommandResult = Schema.Struct({
   stdout: Schema.String,
   stderr: Schema.String,
 });
+
 export interface CommandResult extends Schema.Schema.Type<
   typeof CommandResult
 > {}
@@ -48,6 +49,7 @@ export class CommandExecutor extends Context.Service<
           catch: (error) =>
             new CommandError({ command, message: String(error) }),
         });
+
         const [exitCode, stdout, stderr] = yield* Effect.promise(() =>
           Promise.all([
             process.exited,
@@ -55,6 +57,7 @@ export class CommandExecutor extends Context.Service<
             new Response(process.stderr).text(),
           ]),
         );
+
         if (exitCode !== 0) {
           return yield* new CommandError({
             command,
@@ -62,6 +65,7 @@ export class CommandExecutor extends Context.Service<
             exitCode,
           });
         }
+
         return { stdout, stderr };
       }),
       exists: (command) =>
@@ -73,6 +77,7 @@ export class CommandExecutor extends Context.Service<
               stderr: "ignore",
             },
           );
+
           return (await process.exited) === 0;
         }),
     }),

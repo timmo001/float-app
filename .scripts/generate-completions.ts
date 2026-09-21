@@ -11,10 +11,12 @@ const check = process.argv.includes("--check");
 for (const shell of shells) {
   const path = outputPaths[shell];
   const expected = renderCompletions(shell);
+
   if (check) {
     const actual = await Bun.file(path)
       .text()
       .catch(() => "");
+
     if (actual !== expected) {
       console.error(`${path} is out of date. Run 'mise run completions'.`);
       process.exitCode = 1;

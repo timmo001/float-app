@@ -2,6 +2,7 @@ import { cliCommands, getCliCommand, type CliCommandSpec } from "./spec.js";
 
 function rows(values: readonly [string, string][]): string[] {
   const width = Math.max(...values.map(([label]) => label.length));
+
   return values.map(
     ([label, description]) => `  ${label.padEnd(width)}  ${description}`,
   );
@@ -12,7 +13,9 @@ function commandHelp(command: CliCommandSpec): string {
     `Usage: float-app ${command.name}${command.usage ? ` ${command.usage}` : ""}`,
     "",
   ];
+
   if (command.description) lines.push(...command.description, "");
+
   if (command.options?.length) {
     lines.push(
       "Options:",
@@ -25,12 +28,14 @@ function commandHelp(command: CliCommandSpec): string {
       "",
     );
   }
+
   if (command.examples) {
     lines.push(
       "Examples:",
       ...command.examples.map((example) => `  ${example}`),
     );
   }
+
   return lines.join("\n").trimEnd();
 }
 
@@ -38,6 +43,7 @@ export function renderHelp(commandName?: string): string {
   if (commandName) {
     return commandHelp(getCliCommand(commandName) ?? getCliCommand("help")!);
   }
+
   return [
     "Usage: float-app <command> [options]",
     "",

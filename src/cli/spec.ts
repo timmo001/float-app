@@ -5,6 +5,7 @@ export const CliArgumentSpec = Schema.Struct({
   description: Schema.optionalKey(Schema.String),
   choices: Schema.optionalKey(Schema.Array(Schema.String)),
 });
+
 export interface CliArgumentSpec extends Schema.Schema.Type<
   typeof CliArgumentSpec
 > {}
@@ -15,6 +16,7 @@ export const CliOptionSpec = Schema.Struct({
   description: Schema.String,
   valueName: Schema.optionalKey(Schema.String),
 });
+
 export interface CliOptionSpec extends Schema.Schema.Type<
   typeof CliOptionSpec
 > {}
@@ -28,6 +30,7 @@ export const CliCommandSpec = Schema.Struct({
   options: Schema.optionalKey(Schema.Array(CliOptionSpec)),
   examples: Schema.optionalKey(Schema.Array(Schema.String)),
 });
+
 export interface CliCommandSpec extends Schema.Schema.Type<
   typeof CliCommandSpec
 > {}

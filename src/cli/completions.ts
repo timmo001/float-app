@@ -1,14 +1,16 @@
 import { cliCommands } from "./spec.js";
 
 export const shells = ["bash", "fish", "zsh"] as const;
+
 export type Shell = (typeof shells)[number];
 
 export function isShell(value: string): value is Shell {
-  return shells.includes(value as Shell);
+  return shells.some((shell) => shell === value);
 }
 
 export function renderCompletions(shell: Shell): string {
   const commands = cliCommands.map(({ name }) => name).join(" ");
+
   switch (shell) {
     case "bash":
       return `complete -W '${commands}' float-app\n`;
