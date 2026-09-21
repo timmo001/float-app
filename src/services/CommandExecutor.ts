@@ -1,6 +1,6 @@
 import { Context, Effect, Layer, Schema } from "effect";
 
-export class CommandError extends Schema.TaggedErrorClass<CommandError>()(
+export class CommandError extends Schema.TaggedError<CommandError>()(
   "CommandError",
   {
     command: Schema.String,

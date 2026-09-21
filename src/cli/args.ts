@@ -1,10 +1,9 @@
 import { Schema } from "effect";
 import { CliCommandSpec, getCliCommand } from "./spec.js";
 
-export class UsageError extends Schema.TaggedErrorClass<UsageError>()(
-  "UsageError",
-  { message: Schema.String },
-) {}
+export class UsageError extends Schema.TaggedError<UsageError>()("UsageError", {
+  message: Schema.String,
+}) {}
 
 export const ParsedCliArgs = Schema.Struct({
   command: Schema.optional(CliCommandSpec),

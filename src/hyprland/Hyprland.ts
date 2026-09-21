@@ -18,7 +18,7 @@ import {
 } from "./model.js";
 import { includeLine, renderConf, renderLua, upsertInclude } from "./render.js";
 
-export class FloatAppError extends Schema.TaggedErrorClass<FloatAppError>()(
+export class FloatAppError extends Schema.TaggedError<FloatAppError>()(
   "FloatAppError",
   { message: Schema.String },
 ) {}
