@@ -32,7 +32,12 @@ describe("CLI arguments", () => {
     expect(optionValue(args, "--config")).toBeUndefined();
     expect(
       optionValue(
-        { ...args, options: new Map([["--initial-class", false]]) },
+        {
+          command: args.command,
+          positionals: args.positionals,
+          help: args.help,
+          options: new Map([["--initial-class", false]]),
+        },
         "--initial-class",
       ),
     ).toBeUndefined();

@@ -57,6 +57,16 @@ description = "Generate the CLI reference"
 depends = ["docs:install"]
 run = "bun run --cwd docs gen:cli"
 
+[tasks."docs:sync"]
+description = "Generate Astro types"
+depends = ["docs:install"]
+run = "bun run --cwd docs astro sync"
+
+[tasks."docs:typecheck"]
+description = "Type-check documentation TypeScript"
+depends = ["install", "docs:sync"]
+run = "bunx tsc --noEmit --project docs/tsconfig.json"
+
 [tasks."docs:build"]
 description = "Build the documentation site"
 depends = ["docs:install"]
@@ -69,4 +79,4 @@ run = "bun run completions:check"
 
 [tasks.check]
 description = "Lint, type-check, test, and verify formatting"
-depends = ["lint", "typecheck", "test", "format:check", "completions:check"]
+depends = ["lint", "typecheck", "docs:typecheck", "test", "format:check", "completions:check"]

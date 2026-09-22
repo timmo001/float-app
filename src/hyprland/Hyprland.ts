@@ -108,7 +108,7 @@ function loadRegistry() {
 
     return yield* readJsonFile(registryPath).pipe(
       Effect.flatMap(Schema.decodeUnknownEffect(Registry)),
-      Effect.mapError((cause) => error(`Invalid registry: ${cause}`)),
+      Effect.mapError((cause) => error(`Invalid registry: ${String(cause)}`)),
     );
   });
 }
@@ -251,7 +251,7 @@ export class Hyprland extends Context.Service<Hyprland, HyprlandService>()(
                 JSON.parse(stdout),
               ).pipe(
                 Effect.mapError((cause) =>
-                  error(`Invalid hyprctl client data: ${cause}`),
+                  error(`Invalid hyprctl client data: ${String(cause)}`),
                 ),
               ),
             catch: (cause) => error(`Invalid hyprctl JSON: ${String(cause)}`),
@@ -276,7 +276,7 @@ export class Hyprland extends Context.Service<Hyprland, HyprlandService>()(
 
             return Schema.decodeUnknownEffect(HyprlandClient)(value).pipe(
               Effect.mapError((cause) =>
-                error(`Invalid hyprctl activewindow data: ${cause}`),
+                error(`Invalid hyprctl activewindow data: ${String(cause)}`),
               ),
             );
           },

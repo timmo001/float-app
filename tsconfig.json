@@ -17,5 +17,5 @@
       }
     ]
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests", ".scripts/**/*.ts", "oxlint.config.ts"]
 }
