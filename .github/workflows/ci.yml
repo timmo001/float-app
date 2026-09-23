@@ -19,7 +19,7 @@ concurrency:
 jobs:
   lint:
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/lint-oxlint.yml@68adb4ba625cbc742312fe526d57024f1ec4b493  # master
+    uses: timmo001/workflows/.github/workflows/lint-oxlint.yml@ee51b59fac85756d78f89c26f2c5db58ecd5d36a  # master
   check:
     name: Check and build
     runs-on: ubuntu-latest
