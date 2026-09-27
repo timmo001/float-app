@@ -44,8 +44,8 @@ jobs:
   publish:
     name: Publish AUR (float-app-git)
     needs: prepare
-    uses: >-
-      timmo001/workflows/.github/workflows/publish-aur.yml@7c0c9b99547a5d90bb16f35ac848695c4b6473ab
+    # yamllint disable-line rule:line-length
+    uses: timmo001/workflows/.github/workflows/publish-aur.yml@0f94251168336b74fadf271a955d24d1de4de343 # 20260927.1
     with:
       package-name: float-app-git
       artifact-name: >-
