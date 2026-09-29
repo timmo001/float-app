@@ -32,7 +32,7 @@ jobs:
     permissions:
       contents: write
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/release-bun-cli-linux.yml@0f94251168336b74fadf271a955d24d1de4de343 # 20260927.1
+    uses: timmo001/workflows/.github/workflows/release-bun-cli-linux.yml@d787ea887605af00fd70650e7be38acbdab95aad # 20260929.0
     with:
       binary-name: float-app
       entrypoint: src/index.ts
@@ -75,7 +75,7 @@ jobs:
     name: Publish Arch package (float-app-bin)
     needs: prepare
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/build-arch-package.yml@0f94251168336b74fadf271a955d24d1de4de343 # 20260927.1
+    uses: timmo001/workflows/.github/workflows/build-arch-package.yml@d787ea887605af00fd70650e7be38acbdab95aad # 20260929.0
     with:
       package-name: float-app-bin
       # yamllint disable-line rule:line-length
@@ -88,7 +88,7 @@ jobs:
     name: Publish AUR (float-app-bin)
     needs: prepare
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/publish-aur.yml@0f94251168336b74fadf271a955d24d1de4de343 # 20260927.1
+    uses: timmo001/workflows/.github/workflows/publish-aur.yml@d787ea887605af00fd70650e7be38acbdab95aad # 20260929.0
     with:
       package-name: float-app-bin
       artifact-name: >-
