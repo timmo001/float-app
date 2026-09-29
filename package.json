@@ -16,14 +16,14 @@
     "completions:check": "bun run .scripts/generate-completions.ts --check",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \".scripts/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\" \".scripts/**/*.ts\"",
-    "prepare": "effect-tsgo patch"
+    "prepare": "effect-tsgo patch --force=false"
   },
   "dependencies": {
     "@effect/platform-node": "4.0.0-rc.118",
     "effect": "4.0.0-rc.118"
   },
   "devDependencies": {
-    "@effect/tsgo": "^0.46.0",
+    "@effect/tsgo": "^0.47.0",
     "@oxlint/plugins": "1.86.0",
     "@timmo001/oxlint-rules": "0.4.0",
     "@types/bun": "^1.4.2",
