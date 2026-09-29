@@ -40,9 +40,11 @@ function commandHelp(command: CliCommandSpec): string {
 }
 
 export function renderHelp(commandName?: string): string {
-  if (commandName) {
-    return commandHelp(getCliCommand(commandName) ?? getCliCommand("help")!);
-  }
+  const command = commandName
+    ? (getCliCommand(commandName) ?? getCliCommand("help"))
+    : undefined;
+
+  if (command) return commandHelp(command);
 
   return [
     "Usage: float-app <command> [options]",
