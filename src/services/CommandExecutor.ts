@@ -1,4 +1,5 @@
-import { Context, Effect, Layer, Schema } from "effect";
+import { Context, Effect, Layer, Schema, Stream } from "effect";
+import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
 export class CommandError extends Schema.TaggedError<CommandError>()(
   "CommandError",
@@ -31,55 +32,67 @@ export class CommandExecutor extends Context.Service<
   CommandExecutor,
   CommandExecutorService
 >()("float-app/CommandExecutor") {
-  static readonly layer = Layer.succeed(
+  static readonly layer = Layer.effect(
     CommandExecutor,
-    CommandExecutor.of({
-      run: Effect.fn("CommandExecutor.run")(function* (
-        command,
-        args = [],
-        input,
-      ) {
-        const process = yield* Effect.try({
-          try: () =>
-            Bun.spawn([command, ...args], {
-              stdin: input === undefined ? "ignore" : new Blob([input]),
-              stdout: "pipe",
-              stderr: "pipe",
+    Effect.gen(function* () {
+      const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
+
+      const run = Effect.fn("CommandExecutor.run")(
+        function* (
+          command: string,
+          args: readonly string[] = [],
+          input?: string,
+        ) {
+          const handle = yield* spawner.spawn(
+            ChildProcess.make(command, args, {
+              stdin:
+                input === undefined
+                  ? "ignore"
+                  : Stream.make(new TextEncoder().encode(input)),
             }),
-          catch: (error) =>
-            new CommandError({ command, message: String(error) }),
-        });
-
-        const [exitCode, stdout, stderr] = yield* Effect.promise(() =>
-          Promise.all([
-            process.exited,
-            new Response(process.stdout).text(),
-            new Response(process.stderr).text(),
-          ]),
-        );
-
-        if (exitCode !== 0) {
-          return yield* new CommandError({
-            command,
-            message: stderr.trim() || `Exited with status ${exitCode}`,
-            exitCode,
-          });
-        }
-
-        return { stdout, stderr };
-      }),
-      exists: (command) =>
-        Effect.promise(async () => {
-          const process = Bun.spawn(
-            ["sh", "-c", 'command -v "$1"', "sh", command],
-            {
-              stdout: "ignore",
-              stderr: "ignore",
-            },
           );
 
-          return (await process.exited) === 0;
-        }),
+          const [exitCode, stdout, stderr] = yield* Effect.all(
+            [
+              handle.exitCode,
+              handle.stdout.pipe(Stream.decodeText(), Stream.mkString),
+              handle.stderr.pipe(Stream.decodeText(), Stream.mkString),
+            ],
+            { concurrency: "unbounded" },
+          );
+
+          if (exitCode !== 0) {
+            return yield* new CommandError({
+              command,
+              message: stderr.trim() || `Exited with status ${exitCode}`,
+              exitCode,
+            });
+          }
+
+          return { stdout, stderr };
+        },
+        Effect.scoped,
+        (effect, command) =>
+          Effect.catchTag(effect, "PlatformError", (cause) =>
+            Effect.fail(new CommandError({ command, message: String(cause) })),
+          ),
+      );
+
+      const exists = (command: string) =>
+        spawner
+          .exitCode(
+            ChildProcess.make("sh", ["-c", 'command -v "$1"', "sh", command], {
+              stdin: "ignore",
+              stdout: "ignore",
+              stderr: "ignore",
+            }),
+          )
+          .pipe(
+            Effect.map((code) => code === 0),
+            Effect.orElseSucceed(() => false),
+          );
+
+      return CommandExecutor.of({ run, exists });
     }),
   );
 }

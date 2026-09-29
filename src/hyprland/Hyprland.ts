@@ -1,14 +1,6 @@
 import { homedir } from "node:os";
-import { dirname, extname, join, relative, resolve } from "node:path";
-import {
-  lstat,
-  mkdir,
-  readdir,
-  realpath,
-  rename,
-  writeFile,
-} from "node:fs/promises";
-import { Context, Effect, Layer, Schema } from "effect";
+import { basename, dirname, extname, join, relative, resolve } from "node:path";
+import { Context, Effect, FileSystem, Layer, Schema } from "effect";
 import { CommandError, CommandExecutor } from "../services/CommandExecutor.js";
 import {
   HyprlandClient,
@@ -52,100 +44,113 @@ function error(message: string) {
   return new FloatAppError({ message });
 }
 
-function readJsonFile(path: string) {
-  return Effect.tryPromise({
-    try: () => Bun.file(path).json(),
-    catch: (cause) => error(`Could not read ${path}: ${String(cause)}`),
-  });
-}
-
 const NoFocusedWindow = Schema.ObjectKeyword.check(
   Schema.makeFilter((value) => Object.keys(value).length === 0),
 );
 
-function atomicWrite(path: string, content: string) {
-  return Effect.tryPromise({
-    try: async () => {
-      await mkdir(dirname(path), { recursive: true });
-      let target = path;
+function atomicWrite(fs: FileSystem.FileSystem, path: string, content: string) {
+  return Effect.gen(function* () {
+    yield* fs.makeDirectory(dirname(path), { recursive: true });
 
-      try {
-        if ((await lstat(path)).isSymbolicLink()) target = await realpath(path);
-      } catch (cause) {
-        if (
-          cause instanceof Error &&
-          "code" in cause &&
-          cause.code === "ENOENT"
-        ) {
-          try {
-            if ((await lstat(path)).isSymbolicLink()) {
-              throw new Error(`Refusing to replace dangling symlink ${path}`);
-            }
-          } catch (linkCause) {
-            if (!(
-              linkCause instanceof Error &&
-              "code" in linkCause &&
-              linkCause.code === "ENOENT"
-            ))
-              throw linkCause;
-          }
-        } else throw cause;
-      }
+    const isSymlink = yield* fs.readLink(path).pipe(
+      Effect.as(true),
+      Effect.orElseSucceed(() => false),
+    );
 
-      const temporary = `${target}.tmp-${process.pid}`;
-      await writeFile(temporary, content);
-      await rename(temporary, target);
-    },
-    catch: (cause) => error(`Could not write ${path}: ${String(cause)}`),
-  });
+    const target = isSymlink
+      ? yield* fs
+          .realPath(path)
+          .pipe(
+            Effect.mapError(() =>
+              error(`Refusing to replace dangling symlink ${path}`),
+            ),
+          )
+      : path;
+
+    const temporary = `${target}.tmp-${process.pid}`;
+    yield* fs.writeFileString(temporary, content);
+    yield* fs.rename(temporary, target);
+  }).pipe(
+    Effect.mapError((cause) =>
+      cause instanceof FloatAppError
+        ? cause
+        : error(`Could not write ${path}: ${String(cause)}`),
+    ),
+  );
 }
 
-function loadRegistry() {
+function loadRegistry(fs: FileSystem.FileSystem) {
   return Effect.gen(function* () {
-    if (!(yield* Effect.promise(() => Bun.file(registryPath).exists()))) {
-      return { version: 1 as const, rules: [] };
-    }
+    const exists = yield* fs
+      .exists(registryPath)
+      .pipe(
+        Effect.mapError((cause) =>
+          error(`Could not read ${registryPath}: ${String(cause)}`),
+        ),
+      );
 
-    return yield* readJsonFile(registryPath).pipe(
-      Effect.flatMap(Schema.decodeUnknownEffect(Registry)),
+    if (!exists) return { version: 1 as const, rules: [] };
+
+    const text = yield* fs
+      .readFileString(registryPath)
+      .pipe(
+        Effect.mapError((cause) =>
+          error(`Could not read ${registryPath}: ${String(cause)}`),
+        ),
+      );
+
+    return yield* Schema.decodeUnknownEffect(Schema.fromJsonString(Registry))(
+      text,
+    ).pipe(
       Effect.mapError((cause) => error(`Invalid registry: ${String(cause)}`)),
     );
   });
 }
 
-function destinationCandidates() {
-  return Effect.tryPromise({
-    try: async () => {
-      const paths = (await readdir(configRoot, { withFileTypes: true }))
-        .filter(
-          (entry) =>
-            (entry.isFile() || entry.isSymbolicLink()) &&
-            [".lua", ".conf"].includes(extname(entry.name)) &&
-            entry.name !== "float-app.lua" &&
-            entry.name !== "float-app.conf",
-        )
-        .map((entry) => join(configRoot, entry.name));
+const isHyprlandConfigFile = (name: string) =>
+  [".lua", ".conf"].includes(extname(name)) &&
+  name !== "float-app.lua" &&
+  name !== "float-app.conf";
 
-      const preferred = [
-        "looknfeel.lua",
-        "looknfeel.conf",
-        "hyprland.lua",
-        "hyprland.conf",
-      ];
+const isRegularFile = (fs: FileSystem.FileSystem, path: string) =>
+  fs.stat(path).pipe(
+    Effect.map((info) => info.type === "File"),
+    Effect.orElseSucceed(() => false),
+  );
 
-      const rank = (path: string) => {
-        const index = preferred.indexOf(path.split("/").at(-1)!);
+function destinationCandidates(fs: FileSystem.FileSystem) {
+  return Effect.gen(function* () {
+    const names = yield* fs.readDirectory(configRoot);
+    const paths: string[] = [];
 
-        return index === -1 ? preferred.length : index;
-      };
+    for (const name of names) {
+      const path = join(configRoot, name);
 
-      return paths.sort(
-        (left, right) => rank(left) - rank(right) || left.localeCompare(right),
-      );
-    },
-    catch: (cause) =>
+      if (isHyprlandConfigFile(name) && (yield* isRegularFile(fs, path)))
+        paths.push(path);
+    }
+
+    const preferred = [
+      "looknfeel.lua",
+      "looknfeel.conf",
+      "hyprland.lua",
+      "hyprland.conf",
+    ];
+
+    const rank = (path: string) => {
+      const index = preferred.indexOf(basename(path));
+
+      return index === -1 ? preferred.length : index;
+    };
+
+    return paths.sort(
+      (left, right) => rank(left) - rank(right) || left.localeCompare(right),
+    );
+  }).pipe(
+    Effect.mapError((cause) =>
       error(`Could not inspect ${configRoot}: ${String(cause)}`),
-  });
+    ),
+  );
 }
 
 function promptDestination(candidates: readonly string[]) {
@@ -196,43 +201,35 @@ function validateDestination(path: string) {
   return Effect.succeed(absolute);
 }
 
-function hasOmarchyFloatingRules() {
-  return Effect.tryPromise({
-    try: async () => {
-      const entries = await readdir(configRoot, {
-        recursive: true,
-        withFileTypes: true,
-      });
+function hasOmarchyFloatingRules(fs: FileSystem.FileSystem) {
+  return Effect.gen(function* () {
+    const entries = yield* fs.readDirectory(configRoot, { recursive: true });
 
-      for (const entry of entries) {
-        if (
-          !(entry.isFile() || entry.isSymbolicLink()) ||
-          ![".lua", ".conf"].includes(extname(entry.name)) ||
-          entry.name === "float-app.lua" ||
-          entry.name === "float-app.conf"
+    for (const entry of entries) {
+      const path = join(configRoot, entry);
+
+      if (!isHyprlandConfigFile(basename(entry))) continue;
+
+      if (!(yield* isRegularFile(fs, path))) continue;
+
+      const content = yield* fs.readFileString(path);
+
+      if (/float on[^\n]*match:tag floating-window/.test(content)) return true;
+
+      if (
+        /match\s*=\s*\{\s*tag\s*=\s*["']floating-window["'][\s\S]{0,200}?float\s*=\s*true/.test(
+          content,
         )
-          continue;
+      )
+        return true;
+    }
 
-        const content = await Bun.file(
-          join(entry.parentPath, entry.name),
-        ).text();
-
-        if (/float on[^\n]*match:tag floating-window/.test(content))
-          return true;
-
-        if (
-          /match\s*=\s*\{\s*tag\s*=\s*["']floating-window["'][\s\S]{0,200}?float\s*=\s*true/.test(
-            content,
-          )
-        )
-          return true;
-      }
-
-      return false;
-    },
-    catch: (cause) =>
+    return false;
+  }).pipe(
+    Effect.mapError((cause) =>
       error(`Could not inspect Omarchy rules: ${String(cause)}`),
-  });
+    ),
+  );
 }
 
 export class Hyprland extends Context.Service<Hyprland, HyprlandService>()(
@@ -242,6 +239,7 @@ export class Hyprland extends Context.Service<Hyprland, HyprlandService>()(
     Hyprland,
     Effect.gen(function* () {
       const commands = yield* CommandExecutor;
+      const fs = yield* FileSystem.FileSystem;
 
       const clients = commands.run("hyprctl", ["-j", "clients"]).pipe(
         Effect.flatMap(({ stdout }) =>
@@ -332,28 +330,29 @@ export class Hyprland extends Context.Service<Hyprland, HyprlandService>()(
         rules: readonly FloatingRule[],
         requestedConfig?: string,
       ) {
-        const registry = yield* loadRegistry();
+        const registry = yield* loadRegistry(fs);
         const selected = requestedConfig ?? registry.config;
 
         const config = yield* selected
           ? validateDestination(selected)
-          : destinationCandidates().pipe(Effect.flatMap(promptDestination));
+          : destinationCandidates(fs).pipe(Effect.flatMap(promptDestination));
 
         const validatedConfig = yield* validateDestination(config);
         const lua = extname(validatedConfig) === ".lua";
         const generated = join(configRoot, `float-app.${lua ? "lua" : "conf"}`);
 
-        const configText = yield* Effect.tryPromise({
-          try: async () =>
-            (await Bun.file(validatedConfig).exists())
-              ? Bun.file(validatedConfig).text()
-              : "",
-          catch: (cause) =>
+        const configText = yield* fs.exists(validatedConfig).pipe(
+          Effect.flatMap((exists) =>
+            exists ? fs.readFileString(validatedConfig) : Effect.succeed(""),
+          ),
+          Effect.mapError((cause) =>
             error(`Could not read ${validatedConfig}: ${String(cause)}`),
-        });
+          ),
+        );
 
-        const omarchy = yield* hasOmarchyFloatingRules();
+        const omarchy = yield* hasOmarchyFloatingRules(fs);
         yield* atomicWrite(
+          fs,
           generated,
           lua ? renderLua(rules, omarchy) : renderConf(rules, omarchy),
         );
@@ -364,9 +363,17 @@ export class Hyprland extends Context.Service<Hyprland, HyprlandService>()(
           lua ? modulePath : generated,
         );
 
-        yield* atomicWrite(validatedConfig, upsertInclude(configText, include));
+        yield* atomicWrite(
+          fs,
+          validatedConfig,
+          upsertInclude(configText, include),
+        );
         const next = { version: 1 as const, config: validatedConfig, rules };
-        yield* atomicWrite(registryPath, `${JSON.stringify(next, null, 2)}\n`);
+        yield* atomicWrite(
+          fs,
+          registryPath,
+          `${JSON.stringify(next, null, 2)}\n`,
+        );
         yield* commands.run("hyprctl", ["reload"]);
 
         return next;
@@ -375,10 +382,10 @@ export class Hyprland extends Context.Service<Hyprland, HyprlandService>()(
       return Hyprland.of({
         focused,
         pick,
-        list: Effect.fn("Hyprland.list")(loadRegistry),
+        list: Effect.fn("Hyprland.list")(() => loadRegistry(fs)),
         save,
         apply: Effect.fn("Hyprland.apply")(function* (client) {
-          const registry = yield* loadRegistry();
+          const registry = yield* loadRegistry(fs);
           const lua = registry.config?.endsWith(".lua") ?? false;
 
           const dispatcher = lua

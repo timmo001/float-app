@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { Effect, Layer } from "effect";
+import { Effect, FileSystem, Layer } from "effect";
 import { FloatAppError, Hyprland } from "../../src/hyprland/Hyprland.js";
 import type { HyprlandClient } from "../../src/hyprland/model.js";
 import { CommandExecutor } from "../../src/services/CommandExecutor.js";
@@ -21,6 +21,7 @@ const client: HyprlandClient = {
 
 function layerFor(stdout: string) {
   return Hyprland.layer.pipe(
+    Layer.provide(FileSystem.layerNoop({})),
     Layer.provide(
       Layer.succeed(
         CommandExecutor,

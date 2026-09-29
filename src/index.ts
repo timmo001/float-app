@@ -1,4 +1,4 @@
-import { NodeRuntime } from "@effect/platform-node";
+import { NodeRuntime, NodeServices } from "@effect/platform-node";
 import { Cause, Effect, Exit, Layer, Runtime } from "effect";
 import {
   hasOption,
@@ -77,17 +77,23 @@ function runCommand(args: ParsedCliArgs) {
       case "add": {
         const explicitClass = args.positionals[0];
 
-        const client = yield* hasOption(args, "--focused")
-          ? hyprland.focused()
+        const client = hasOption(args, "--focused")
+          ? yield* hyprland.focused()
           : explicitClass
-            ? Effect.void
-            : hyprland.pick();
+            ? undefined
+            : yield* hyprland.pick();
 
         const className =
           explicitClass ??
           (hasOption(args, "--initial-class")
-            ? client!.initialClass
-            : client!.class);
+            ? client?.initialClass
+            : client?.class);
+
+        if (!className) {
+          return yield* new UsageError({
+            message: "float-app add: class is required",
+          });
+        }
 
         const field = hasOption(args, "--initial-class")
           ? "initial_class"
@@ -171,7 +177,10 @@ function report(cause: Cause.Cause<unknown>) {
 if (process.argv.includes("--version")) {
   console.log(version);
 } else {
-  const layers = Hyprland.layer.pipe(Layer.provide(CommandExecutor.layer));
+  const layers = Hyprland.layer.pipe(
+    Layer.provide(CommandExecutor.layer),
+    Layer.provideMerge(NodeServices.layer),
+  );
 
   const teardown: Runtime.Teardown = (exit, onExit) =>
     Exit.isFailure(exit) && !Cause.hasInterruptsOnly(exit.cause)
