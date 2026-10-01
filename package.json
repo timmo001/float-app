@@ -19,7 +19,7 @@
     "prepare": "effect-tsgo patch --force=false"
   },
   "dependencies": {
-    "@effect/platform-node": "4.0.0-rc.118",
+    "@effect/platform-node": "4.0.0",
     "effect": "4.0.0-rc.118"
   },
   "devDependencies": {
