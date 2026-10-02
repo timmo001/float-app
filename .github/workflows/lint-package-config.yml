@@ -23,24 +23,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-arch-pkgbuild:
-    name: Lint Arch PKGBUILDs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out source
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - name: Validate PKGBUILDs
-        run: |
-          docker run --rm \
-            --volume "${{ github.workspace }}:/workspace:ro" \
-            archlinux:latest bash -lc '
-              pacman -Sy --noconfirm namcap
-              cd /workspace
-              find .scripts -name "PKGBUILD*" -print0 \
-                | while IFS= read -r -d "" pkgbuild; do
-                    echo "Validating $pkgbuild"
-                    output="$(namcap "$pkgbuild")"
-                    printf "%s\n" "$output"
-                    test -z "$output"
-                  done
-            '
+  pkgbuild:
+    # yamllint disable-line rule:line-length
+    uses: timmo001/workflows/.github/workflows/lint-arch-pkgbuild.yml@a7b34d53ef8f83b1763fd0d3257a0168416e23ab # 20261001.2
