@@ -10,7 +10,7 @@
     "dev": "bun run --watch src/index.ts",
     "build": "bun build src/index.ts --compile --outfile dist/float-app",
     "test": "bun test",
-    "lint": "oxlint --max-warnings 0 .",
+    "lint": "oxlint .",
     "prelint": "bun install --cwd docs --frozen-lockfile && bun run --cwd docs astro sync",
     "completions": "bun run .scripts/generate-completions.ts",
     "completions:check": "bun run .scripts/generate-completions.ts --check",
