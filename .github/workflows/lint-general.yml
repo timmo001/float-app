@@ -15,7 +15,7 @@ permissions:
 jobs:
   lint:
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/lint-general.yml@2fb8b15d5e72caaea35cc5e4541733d87ef66002 # 20261008.0
+    uses: timmo001/workflows/.github/workflows/lint-general.yml@fcc6d0528cf0533614d1162c5c5b8ebbb6dfdad5 # 20261008.1
     with:
       lint-markdown: true
       lint-yaml: true
@@ -23,15 +23,15 @@ jobs:
 
   jsonlint:
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/lint-jsonlint.yml@2fb8b15d5e72caaea35cc5e4541733d87ef66002 # 20261008.0
+    uses: timmo001/workflows/.github/workflows/lint-jsonlint.yml@fcc6d0528cf0533614d1162c5c5b8ebbb6dfdad5 # 20261008.1
 
   markdown-links:
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/lint-markdown-links.yml@2fb8b15d5e72caaea35cc5e4541733d87ef66002 # 20261008.0
+    uses: timmo001/workflows/.github/workflows/lint-markdown-links.yml@fcc6d0528cf0533614d1162c5c5b8ebbb6dfdad5 # 20261008.1
 
   shellcheck:
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/lint-shellcheck.yml@2fb8b15d5e72caaea35cc5e4541733d87ef66002 # 20261008.0
+    uses: timmo001/workflows/.github/workflows/lint-shellcheck.yml@fcc6d0528cf0533614d1162c5c5b8ebbb6dfdad5 # 20261008.1
     with:
       scandir: ./.scripts
       severity: warning
