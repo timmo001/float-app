@@ -4,3 +4,4 @@ extends: default
 ignore: |
   node_modules/
   .agents/skills/
+  .mise/locks/
