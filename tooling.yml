@@ -1,0 +1,19 @@
+---
+# Tool releases float-app was last reviewed against. The tooling-drift tool
+# (mise run tooling:status / tooling:publish) compares each with the latest
+# release and opens a draft pull request for review when it moves; its README
+# documents this file.
+assignee: timmo001
+dispatch:
+  - ci.yml
+  - lint-general.yml
+tools:
+  - repo: omacom/omarchy
+    reviewed: v4.0.4
+    review: >-
+      Check the Omarchy floating-window tag detection in
+      src/hyprland/Hyprland.ts (hasOmarchyFloatingRules, for both .conf and Lua
+      configs) against Omarchy's shipped window rules, the rule syntax rendered
+      by src/hyprland/render.ts and modelled in src/hyprland/model.ts against
+      the Hyprland version the release brings, and
+      docs/src/content/docs/hyprland/rules.md.

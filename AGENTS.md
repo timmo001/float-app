@@ -15,6 +15,10 @@ This repo contains the standalone `float-app` CLI.
 - Keep CLI metadata in `src/cli/spec.ts`; help and completions consume it.
 - Keep compositor-specific behavior behind adapters.
 - Write generated rules only under the user's compositor config directory.
+- `tooling.yml` records the Omarchy release float-app was last reviewed
+  against; the Tooling drift workflow opens a draft review pull request when it
+  moves. After the review, move it with `mise run tooling:update <repo> <tag>`,
+  never by hand; the `tooling-drift` skill has the steps.
 
 ## Background Dev Servers
 
