@@ -36,6 +36,8 @@ export interface HyprlandService {
 
 const configRoot = join(homedir(), ".config", "hypr");
 
+const omarchyDefaultsRoot = "/usr/share/omarchy/default/hypr";
+
 const stateRoot = join(homedir(), ".config", "float-app");
 
 const registryPath = join(stateRoot, "config.json");
@@ -203,25 +205,37 @@ function validateDestination(path: string) {
 
 function hasOmarchyFloatingRules(fs: FileSystem.FileSystem) {
   return Effect.gen(function* () {
-    const entries = yield* fs.readDirectory(configRoot, { recursive: true });
+    for (const root of [configRoot, omarchyDefaultsRoot]) {
+      if (!(yield* fs.exists(root))) continue;
 
-    for (const entry of entries) {
-      const path = join(configRoot, entry);
+      const entries = yield* fs.readDirectory(root, { recursive: true });
 
-      if (!isHyprlandConfigFile(basename(entry))) continue;
+      for (const entry of entries) {
+        const path = join(root, entry);
 
-      if (!(yield* isRegularFile(fs, path))) continue;
+        if (!isHyprlandConfigFile(basename(entry))) continue;
 
-      const content = yield* fs.readFileString(path);
+        if (!(yield* isRegularFile(fs, path))) continue;
 
-      if (/float on[^\n]*match:tag floating-window/.test(content)) return true;
+        const content = yield* fs.readFileString(path);
 
-      if (
-        /match\s*=\s*\{\s*tag\s*=\s*["']floating-window["'][\s\S]{0,200}?float\s*=\s*true/.test(
-          content,
+        if (/float on[^\n]*match:tag floating-window/.test(content))
+          return true;
+
+        if (
+          /match\s*=\s*\{\s*tag\s*=\s*["']floating-window["'][\s\S]{0,200}?float\s*=\s*true/.test(
+            content,
+          )
         )
-      )
-        return true;
+          return true;
+
+        if (
+          /o\.window\(\s*\{\s*tag\s*=\s*["']floating-window["']\s*\}\s*,\s*\{[^}]*float\s*=\s*true/.test(
+            content,
+          )
+        )
+          return true;
+      }
     }
 
     return false;
