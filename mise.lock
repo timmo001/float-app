@@ -102,7 +102,7 @@ url = "https://nodejs.org/dist/v26.12.0/node-v26.12.0-win-x64.zip"
 
 [[tools."npm:@timmo001/tooling-drift"]]
 version = "0.1.4"
-aube = { path = ".mise/locks/npm-timmo001-tooling-drift/0.1.4~556c7cb7", digest = "sha256:0b19f2e1af846b2fbe340c024e8e66f50661a44e4615a4f76a649ca102025e5f" }
+aube = { path = ".mise/locks/npm-timmo001-tooling-drift/0.1.4~556c7cb7", digest = "sha256:5023833306fb31eea77a049d66cb3866ffe4c3b79665a3942ee383d4ff291cd9" }
 backend = "npm:@timmo001/tooling-drift"
 specifiers = ["0.1.4"]
 
