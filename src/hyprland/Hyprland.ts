@@ -380,7 +380,7 @@ export class Hyprland extends Context.Service<Hyprland, HyprlandService>()(
         yield* atomicWrite(
           fs,
           validatedConfig,
-          upsertInclude(configText, include),
+          upsertInclude(configText, include, lua),
         );
         const next = { version: 1 as const, config: validatedConfig, rules };
         yield* atomicWrite(

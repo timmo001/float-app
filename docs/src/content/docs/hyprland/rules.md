@@ -30,3 +30,8 @@ escaped before being written as RE2 patterns, so punctuation is treated literall
 Each match adds the `floating-window` tag. Unless an existing Omarchy
 floating-window rule is detected, the generated file also floats, centres, and
 sizes tagged windows to `875` by `600`.
+
+With Omarchy's Lua config, rules go through Omarchy's `o.window` helper, so
+Omarchy's floating workspaces leave those apps at their own size. Omarchy only
+records `class` matches for this, so an `initial_class` rule still takes the
+floating workspace's size there.

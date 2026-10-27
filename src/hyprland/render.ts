@@ -45,8 +45,14 @@ export function renderLua(
   for (const rule of rules) {
     const field = rule.field === "initial_class" ? "initial_class" : "class";
     const pattern = `^${escapeRe2Literal(rule.class)}$`;
+    const match = `{ ${field} = ${JSON.stringify(pattern)} }`;
+
+    // Omarchy's o.window records the apps that float on their own, which its
+    // floating workspaces leave at their own size
     lines.push(
-      `hl.window_rule({ match = { ${field} = ${JSON.stringify(pattern)} }, tag = "+floating-window" })`,
+      omarchy
+        ? `o.window(${match}, { tag = "+floating-window" })`
+        : `hl.window_rule({ match = ${match}, tag = "+floating-window" })`,
     );
   }
 
@@ -59,11 +65,14 @@ export function includeLine(configPath: string, generatedPath: string): string {
     : `source = ${generatedPath}`;
 }
 
-const includeStart = "# float-app rules: start";
-
-const includeEnd = "# float-app rules: end";
-
-export function upsertInclude(content: string, include: string): string {
+export function upsertInclude(
+  content: string,
+  include: string,
+  lua: boolean,
+): string {
+  const comment = lua ? "--" : "#";
+  const includeStart = `${comment} float-app rules: start`;
+  const includeEnd = `${comment} float-app rules: end`;
   const block = `${includeStart}\n${include}\n${includeEnd}`;
   const start = content.indexOf(includeStart);
   const end = content.indexOf(includeEnd, start);
