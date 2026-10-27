@@ -9,7 +9,8 @@ dispatch:
   - lint-general.yml
 tools:
   - repo: omacom/omarchy
-    reviewed: v4.0.6
+    reviewed: v4.5.0-rc2
+    prereleases: true
     review: >-
       Check the Omarchy floating-window tag detection in
       src/hyprland/Hyprland.ts (hasOmarchyFloatingRules, for both .conf and Lua
