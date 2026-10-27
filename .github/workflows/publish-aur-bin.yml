@@ -34,7 +34,7 @@ jobs:
       id-token: write
       attestations: write
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/release-bun-cli-linux.yml@6e3616d0d48c9c8ed9865b648107140b99b16551 # 20261024.0
+    uses: timmo001/workflows/.github/workflows/release-bun-cli-linux.yml@de4221cd9b24ad3d61aa1db87b6e4864cf56d5a1 # 20261027.0
     with:
       binary-name: float-app
       entrypoint: src/index.ts
@@ -63,7 +63,7 @@ jobs:
           persist-credentials: false
       - name: Render PKGBUILD
         # yamllint disable-line rule:line-length
-        uses: timmo001/workflows/.github/actions/prepare-arch-bin@6e3616d0d48c9c8ed9865b648107140b99b16551 # 20261024.0
+        uses: timmo001/workflows/.github/actions/prepare-arch-bin@de4221cd9b24ad3d61aa1db87b6e4864cf56d5a1 # 20261027.0
         with:
           releaseVersion: ${{ env.RELEASE_VERSION }}
           packageName: float-app
@@ -84,7 +84,7 @@ jobs:
     name: Publish Arch package (float-app-bin)
     needs: prepare
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/build-arch-package.yml@6e3616d0d48c9c8ed9865b648107140b99b16551 # 20261024.0
+    uses: timmo001/workflows/.github/workflows/build-arch-package.yml@de4221cd9b24ad3d61aa1db87b6e4864cf56d5a1 # 20261027.0
     with:
       package-name: float-app-bin
       # yamllint disable-line rule:line-length
@@ -101,7 +101,7 @@ jobs:
       id-token: write
       attestations: write
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/attach-release-arch-package.yml@6e3616d0d48c9c8ed9865b648107140b99b16551 # 20261024.0
+    uses: timmo001/workflows/.github/workflows/attach-release-arch-package.yml@de4221cd9b24ad3d61aa1db87b6e4864cf56d5a1 # 20261027.0
     with:
       artifact-name: ${{ needs.publish-arch.outputs.artifact-name }}
       release-tag: >-
@@ -112,7 +112,7 @@ jobs:
     name: Publish AUR (float-app-bin)
     needs: prepare
     # yamllint disable-line rule:line-length
-    uses: timmo001/workflows/.github/workflows/publish-aur.yml@6e3616d0d48c9c8ed9865b648107140b99b16551 # 20261024.0
+    uses: timmo001/workflows/.github/workflows/publish-aur.yml@de4221cd9b24ad3d61aa1db87b6e4864cf56d5a1 # 20261027.0
     with:
       package-name: float-app-bin
       artifact-name: >-
