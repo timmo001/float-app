@@ -16,9 +16,9 @@ This repo contains the standalone `float-app` CLI.
 - Keep compositor-specific behavior behind adapters.
 - Write generated rules only under the user's compositor config directory.
 - `tooling.yml` records the Omarchy release float-app was last reviewed
-  against; the Tooling drift workflow opens a draft review pull request when it
-  moves. After the review, move it with `mise run tooling:update <repo> <tag>`,
-  never by hand; the `tooling-drift` skill has the steps.
+  against. Upkeep's [`drift` job](https://upkeep.timmo.dev/running#drift)
+  checks it for new releases. Record a review by setting `reviewed` in
+  `tooling.yml` and pushing.
 
 ## Background Dev Servers
 
