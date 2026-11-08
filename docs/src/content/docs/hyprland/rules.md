@@ -35,5 +35,5 @@ is dev-linked to a source checkout as well as `/usr/share/omarchy`.
 
 With Omarchy's Lua config, rules go through Omarchy's `o.window` helper, so
 Omarchy's floating workspaces leave those apps at their own size. Omarchy only
-records `class` matches for this, so an `initial_class` rule still takes the
-floating workspace's size there.
+records `class` and `title` matches for this, so an `initial_class` rule still
+takes the floating workspace's size there.
