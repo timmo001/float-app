@@ -29,7 +29,9 @@ escaped before being written as RE2 patterns, so punctuation is treated literall
 
 Each match adds the `floating-window` tag. Unless an existing Omarchy
 floating-window rule is detected, the generated file also floats, centres, and
-sizes tagged windows to `875` by `600`.
+sizes tagged windows to `875` by `600`. `float-app` looks for that rule under
+`~/.config/hypr` and in Omarchy's defaults, under `$OMARCHY_PATH` when Omarchy
+is dev-linked to a source checkout as well as `/usr/share/omarchy`.
 
 With Omarchy's Lua config, rules go through Omarchy's `o.window` helper, so
 Omarchy's floating workspaces leave those apps at their own size. Omarchy only

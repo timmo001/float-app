@@ -36,7 +36,16 @@ export interface HyprlandService {
 
 const configRoot = join(homedir(), ".config", "hypr");
 
-const omarchyDefaultsRoot = "/usr/share/omarchy/default/hypr";
+const packagedOmarchyPath = "/usr/share/omarchy";
+
+// Omarchy's dev link points OMARCHY_PATH at a source checkout, and Hyprland
+// loads Omarchy's defaults from there instead of the package
+const omarchyDefaultsRoots = [
+  ...new Set([
+    process.env.OMARCHY_PATH || packagedOmarchyPath,
+    packagedOmarchyPath,
+  ]),
+].map((path) => join(path, "default", "hypr"));
 
 const stateRoot = join(homedir(), ".config", "float-app");
 
@@ -205,7 +214,7 @@ function validateDestination(path: string) {
 
 function hasOmarchyFloatingRules(fs: FileSystem.FileSystem) {
   return Effect.gen(function* () {
-    for (const root of [configRoot, omarchyDefaultsRoot]) {
+    for (const root of [configRoot, ...omarchyDefaultsRoots]) {
       if (!(yield* fs.exists(root))) continue;
 
       const entries = yield* fs.readDirectory(root, { recursive: true });
