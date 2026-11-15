@@ -33,7 +33,7 @@
     "astro": "7.4.12",
     "oxlint": "1.93.0",
     "oxlint-tsgolint": "7.0.2007",
-    "prettier": "3.9.8",
+    "prettier": "3.10.1",
     "wrangler": "4.162.0"
   },
   "trustedDependencies": [
