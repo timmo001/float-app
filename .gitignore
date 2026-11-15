@@ -1,5 +1,6 @@
 node_modules/
 dist/
 dist-ts/
+.claude/settings.local.json
 docs/.astro/
 docs/dist/
