@@ -70,7 +70,8 @@ run = "bun run gen:cli"
 
 [tasks."docs:lint"]
 description = "Lint the docs site with the shared Oxlint rules"
-depends = ["docs:install"]
+# The docs scripts import src/cli/spec.ts, which needs the root dependencies.
+depends = ["install", "docs:install"]
 dir = "docs"
 run = "bun run lint"
 
