@@ -58,7 +58,7 @@ function renderCommand(command: CliCommandSpec) {
   if (command.examples?.length) push("### Examples", "", "```bash", ...command.examples, "```", "");
 }
 
-push("---", "title: Command Reference", "description: Every float-app command, option, and example, generated from the CLI registry.", "sidebar:", "  order: 2", "---", "", "<!-- Generated from src/cli/spec.ts. Do not edit by hand. -->", "", "This page is generated from the same registry that powers `float-app help`.", "");
+push("---", "title: Command Reference", "description: Every float-app command, option, and example, generated from the CLI registry.", "---", "", "<!-- Generated from src/cli/spec.ts. Do not edit by hand. -->", "", "This page is generated from the same registry that powers `float-app help`.", "");
 
 for (const command of cliCommands) renderCommand(command);
 

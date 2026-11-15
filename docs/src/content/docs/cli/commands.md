@@ -1,8 +1,6 @@
 ---
 title: Command Reference
 description: Every float-app command, option, and example, generated from the CLI registry.
-sidebar:
-  order: 2
 ---
 
 <!-- Generated from src/cli/spec.ts. Do not edit by hand. -->

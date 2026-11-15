@@ -1,28 +1,40 @@
 {
   "name": "float-app-docs",
-  "private": true,
   "type": "module",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "deploy": "wrangler deploy",
-    "deploy:preview": "wrangler versions upload",
-    "preview": "astro preview",
-    "gen:cli": "bun scripts/generate-cli-reference.ts && bunx prettier --write src/content/docs/cli/commands.md",
+    "dev": "blume dev",
+    "start": "blume dev",
+    "build": "blume build --strict",
+    "check": "blume check --strict",
+    "lint": "oxlint -c oxlint.docs.config.ts .",
+    "validate": "blume validate --strict",
+    "deploy": "wrangler deploy --config dist/server/wrangler.json",
+    "deploy:preview": "wrangler versions upload --config dist/server/wrangler.json",
+    "preview": "blume preview",
+    "brand": "bun scripts/brand-images.ts",
+    "gen:cli": "bun scripts/generate-cli-reference.ts && prettier --write src/content/docs/cli/commands.md",
     "pregen:cli": "bun install --cwd .. --frozen-lockfile",
     "predev": "bun run gen:cli",
-    "prebuild": "bun run gen:cli"
+    "prebuild": "bun run gen:cli",
+    "precheck": "bun run gen:cli"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.4",
-    "@astrojs/starlight": "^0.43.1",
-    "astro": "^7.3.3",
-    "starlight-links-validator": "^0.27.0",
-    "starlight-llms-txt": "^0.12.0"
+    "@astrojs/cloudflare": "14.4.8",
+    "@timmo001/docs-kit": "0.46.0",
+    "blume": "2.2.7",
+    "sharp": "0.35.5"
   },
   "devDependencies": {
-    "prettier": "^3.9.8",
-    "wrangler": "^4.136.1"
+    "@oxlint/plugins": "1.93.0",
+    "@timmo001/oxlint-rules": "0.6.5",
+    "@types/bun": "1.4.4",
+    "astro": "7.4.12",
+    "oxlint": "1.93.0",
+    "oxlint-tsgolint": "7.0.2007",
+    "prettier": "3.9.8",
+    "wrangler": "4.162.0"
   },
   "trustedDependencies": [
     "esbuild",

@@ -3,4 +3,7 @@ dist/
 dist-ts/
 .claude/settings.local.json
 docs/.astro/
+docs/.blume/
+docs/.blume-verify/
+docs/.wrangler/
 docs/dist/

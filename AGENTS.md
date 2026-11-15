@@ -24,7 +24,7 @@ This repo contains the standalone `float-app` CLI.
 
 - Start the docs dev server with `mise run serve:docs`, which runs it through
   Pitchfork in the background and restarts it if it exits or stops responding.
-  Do not run `astro dev` in the foreground from an agent.
+  Do not run `blume dev` in the foreground from an agent.
 - Use `mise run serve:docs:status`, `mise run serve:docs:logs`,
   `mise run serve:docs:restart` and `mise run serve:docs:stop` to manage it.
 - The daemon is configured in `pitchfork.toml`. It serves

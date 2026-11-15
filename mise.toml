@@ -59,27 +59,35 @@ run = "bun run completions"
 
 [tasks."docs:install"]
 description = "Install documentation dependencies"
-run = "bun install --cwd docs"
+dir = "docs"
+run = "bun install --frozen-lockfile"
 
 [tasks."docs:gen:cli"]
 description = "Generate the CLI reference"
 depends = ["docs:install"]
-run = "bun run --cwd docs gen:cli"
+dir = "docs"
+run = "bun run gen:cli"
 
-[tasks."docs:sync"]
-description = "Generate Astro types"
+[tasks."docs:lint"]
+description = "Lint the docs site with the shared Oxlint rules"
 depends = ["docs:install"]
-run = "bun run --cwd docs astro sync"
-
-[tasks."docs:typecheck"]
-description = "Type-check documentation TypeScript"
-depends = ["install", "docs:sync"]
-run = "bunx tsc --noEmit --project docs/tsconfig.json"
+dir = "docs"
+run = "bun run lint"
 
 [tasks."docs:build"]
 description = "Build the documentation site"
 depends = ["docs:install"]
-run = "bun run --cwd docs build"
+dir = "docs"
+run = "bun run build"
+
+[tasks."docs:check"]
+description = "Check the docs site's pages, links and types without disturbing a running dev server"
+depends = ["docs:install"]
+dir = "docs"
+# The tsconfig reads Blume's generated types from .blume/. When it exists a dev
+# server may be using it, so check in --isolated's .blume-verify/ and keep
+# reading those types; in a fresh checkout such as CI, generate .blume/ itself.
+run = "if [ -d .blume ]; then bun run check -- --isolated; else bun run check; fi"
 
 [tasks."serve:docs"]
 description = "Start the docs dev server in the background through Pitchfork"
@@ -109,4 +117,4 @@ run = "bun run completions:check"
 
 [tasks.check]
 description = "Lint, type-check, test, and verify formatting"
-depends = ["lint", "typecheck", "docs:typecheck", "test", "format:check", "completions:check"]
+depends = ["lint", "typecheck", "docs:lint", "docs:check", "test", "format:check", "completions:check"]

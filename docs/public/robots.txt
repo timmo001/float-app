@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://float-app.timmo.dev/sitemap-index.xml

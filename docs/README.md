@@ -1,19 +1,20 @@
 # float-app Docs
 
 The [float-app](https://github.com/timmo001/float-app) documentation site, built
-with Astro and Starlight.
+with [Blume](https://github.com/haydenbleasel/blume) and
+[docs-kit](https://github.com/timmo001/groundwork/tree/main/packages/docs-kit).
 
 Run these commands from the repository root:
 
 - `mise run docs:install`
 - `mise run docs:gen:cli`
-- `mise run docs:typecheck`
+- `mise run docs:lint`
+- `mise run docs:check`
 - `mise run docs:build`
 
-`mise run check` includes TypeScript 7 checking for the docs content config and
-CLI reference generator. Oxlint also checks these files with type-aware rules.
-The Astro build validates content and renders the site; it does not type-check
-Astro templates or MDX. There are currently no local `.astro` files.
+`mise run check` runs `blume check --strict --isolated` against the pages, links
+and types, and lints the docs scripts with the shared Oxlint rules.
 
-From this directory, use `bun run dev` for local development and `bun run deploy`
-to deploy the static site to Cloudflare Workers.
+From this directory, use `bun run dev` for local development, `bun run brand` to
+regenerate the PNG branding from `src/assets/logo.svg` and `bun run deploy` to
+deploy to Cloudflare Workers.

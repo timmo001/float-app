@@ -1,47 +1,36 @@
 ---
-title: float-app
+title: Overview
 description: Persistently float selected Hyprland windows.
-template: splash
-hero:
-  title: float-app
-  tagline: Persist floating window rules without disturbing your Hyprland setup.
-  actions:
-    - text: Install
-      link: /install/
-      icon: right-arrow
-    - text: Quick start
-      link: /quick-start/
-      icon: open-book
-      variant: minimal
-    - text: View on GitHub
-      link: https://github.com/timmo001/float-app
-      icon: external
-      variant: minimal
 ---
-
-import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
 
 `float-app` identifies Hyprland windows and writes persistent floating rules for their exact class or initial class.
 
-<CardGrid>
-  <Card title="Pick a window" icon="cursor">
-    Select any visible window with `slurp`, without changing keyboard focus.
-  </Card>
-  <Card title="Persistent rules" icon="document">
-    Keep managed rules in a generated file and include it from your chosen
-    Hyprland config.
-  </Card>
-  <Card title="Config-safe writes" icon="setting">
-    Preserve stowed symlinks, support Lua and conf configs, and avoid replacing
-    Omarchy's shared floating rules.
-  </Card>
-</CardGrid>
+- **Pick a window.** Select any visible window with `slurp`, without changing keyboard focus.
+- **Persistent rules.** Keep managed rules in a generated file and include it from your chosen Hyprland config.
+- **Config-safe writes.** Preserve stowed symlinks, support Lua and conf configs, and avoid replacing Omarchy's shared floating rules.
 
-## Start Here
+## Start here
 
-<CardGrid>
-  <LinkCard title="Install" href="/install/" description="Install a release, distribution package, or AUR package." />
-  <LinkCard title="Quick Start" href="/quick-start/" description="Pick a window and add, inspect, or remove its rule." />
-  <LinkCard title="CLI" href="/cli/" description="Read the command-line guide and generated reference." />
-  <LinkCard title="Hyprland Rules" href="/hyprland/rules/" description="Understand generated files, config selection, and Omarchy handling." />
-</CardGrid>
+<CardGroup cols={2}>
+  <Card title="Install" href="/install">
+    Install a release, distribution package, or AUR package.
+  </Card>
+  <Card title="Quick Start" href="/quick-start">
+    Pick a window and add, inspect, or remove its rule.
+  </Card>
+  <Card title="CLI" href="/cli">
+    Read the command-line guide and generated reference.
+  </Card>
+  <Card title="Hyprland Rules" href="/hyprland/rules">
+    Understand generated files, config selection, and Omarchy handling.
+  </Card>
+</CardGroup>
+
+## Machine-readable docs
+
+| URL                                         | Use                                      |
+| ------------------------------------------- | ---------------------------------------- |
+| https://float-app.timmo.dev/llms.txt        | Compact page index                       |
+| https://float-app.timmo.dev/llms-full.txt   | Full docs bundle                         |
+| https://float-app.timmo.dev/mcp             | Hosted MCP (search, page and navigation) |
+| `/{route}.md`                               | One page as Markdown                     |
