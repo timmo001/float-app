@@ -90,6 +90,24 @@ dir = "docs"
 # reading those types; in a fresh checkout such as CI, generate .blume/ itself.
 run = "if [ -d .blume ]; then bun run check -- --isolated; else bun run check; fi"
 
+[tasks."docs:plan"]
+description = "Build the docs site, then show what deploying its prod stage would change"
+depends = ["docs:build"]
+dir = "docs"
+run = "bun run plan"
+
+[tasks."docs:deploy"]
+description = "Build the docs site, then deploy its prod stage with Alchemy"
+depends = ["docs:build"]
+dir = "docs"
+run = "bun run deploy"
+
+[tasks."docs:deploy:github"]
+description = "Mint CI's Cloudflare token into the repository's secrets"
+depends = ["docs:install"]
+dir = "docs"
+run = "bun run deploy:github"
+
 [tasks."serve:docs"]
 description = "Start the docs dev server in the background through Pitchfork"
 depends = ["docs:install"]
