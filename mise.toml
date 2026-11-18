@@ -64,7 +64,7 @@ run = "bun install --frozen-lockfile"
 
 [tasks."docs:gen:cli"]
 description = "Generate the CLI reference"
-depends = ["docs:install"]
+depends = ["install", "docs:install"]
 dir = "docs"
 run = "bun run gen:cli"
 
@@ -77,13 +77,15 @@ run = "bun run lint"
 
 [tasks."docs:build"]
 description = "Build the documentation site"
-depends = ["docs:install"]
+depends = ["install", "docs:install"]
 dir = "docs"
 run = "bun run build"
 
 [tasks."docs:check"]
 description = "Check the docs site's pages, links and types without disturbing a running dev server"
-depends = ["docs:install"]
+# Its precheck reinstalls the root dependencies, so wait for install rather than
+# racing its effect-tsgo patch.
+depends = ["install", "docs:install"]
 dir = "docs"
 # The tsconfig reads Blume's generated types from .blume/. When it exists a dev
 # server may be using it, so check in --isolated's .blume-verify/ and keep
