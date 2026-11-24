@@ -1,0 +1,6 @@
+{
+  // Rules stay in .markdownlint.json, which CI's markdownlint-cli also reads.
+  // markdownlint-cli2 doesn't read .markdownlintignore, so the shared pre-push
+  // hook needs the synced skills ignored here too.
+  "ignores": [".agents/skills/**"],
+}
