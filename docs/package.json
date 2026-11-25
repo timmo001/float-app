@@ -40,7 +40,7 @@
     "oxlint": "1.95.0",
     "oxlint-tsgolint": "7.0.2008",
     "prettier": "3.10.1",
-    "wrangler": "4.167.0"
+    "wrangler": "4.168.0"
   },
   "trustedDependencies": [
     "esbuild",
